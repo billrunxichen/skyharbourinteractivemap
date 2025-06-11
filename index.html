@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>US Airport Map</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    #map {
+      height: 75vh;
+      width: 100%;
+    }
+
+    .legend {
+      background: white;
+      padding: 10px;
+      line-height: 1.5em;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      position: absolute;
+      bottom: 80px;
+      left: 30px;
+      z-index: 1000;
+    }
+
+    .legend i {
+      width: 14px;
+      height: 14px;
+      float: left;
+      margin-right: 8px;
+      opacity: 0.9;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+
+  <h2 style="text-align:center;">Interactive US Airport Map</h2>
+  <div id="map"></div>
+
+  <div class="legend">
+    <div><i style="background: red"></i> In Operation</div>
+    <div><i style="background: black"></i> In Development</div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // Initialize the map
+    var map = L.map('map').setView([37.8, -96], 4); // Centered on US
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Load airport data from JSON file
+fetch("/sites/SkyHarbourGroupTeamSite/Shared Documents/airports/airport_status/JSON/airports.json")
+  .then(response => response.json())
+  .then(data => {
+    data.forEach(function(airport) {
+      const iconColor = airport.status === "In Operation" ? "red" : "black";
+      const icon = L.divIcon({
+        className: 'custom-icon',
+        html: `<div style="background:${iconColor}; width:12px; height:12px; border-radius:50%; border:2px solid white;"></div>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
+      });
+
+      L.marker([airport.lat, airport.lng], { icon: icon }).addTo(map)
+        .bindPopup(`
+          <strong>${airport.code}</strong>: ${airport.name}<br>
+          ${airport.address}<br>
+          <em>Status: ${airport.status}</em><br>
+          <a href="${airport.url}" target="_blank">View Airport Page</a>
+        `);
+    });
+  })
+  .catch(error => console.error("Error loading JSON:", error));
+  </script>
+
+</body>
+</html>
