@@ -1,19 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>US Airport Map</title>
+  <title>US Airport Map (Test)</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
   <style>
-    #map {
-      height: 75vh;
-      width: 100%;
-    }
-
+    #map { height: 75vh; width: 100%; }
     .legend {
       background: white;
       padding: 10px;
@@ -25,7 +18,6 @@
       left: 30px;
       z-index: 1000;
     }
-
     .legend i {
       width: 14px;
       height: 14px;
@@ -42,102 +34,40 @@
 <div id="map"></div>
 
 <div class="legend">
-  <div><i style="background: red"></i> In Operation</div>
-  <div><i style="background: black"></i> In Development</div>
+  <div><i style="background: red"></i> Test Airport</div>
 </div>
 
-<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <script>
-  // Initialize the map
-  var map = L.map('map').setView([37.8, -96], 4); // Centered on US
+  const map = L.map('map').setView([37.8, -96], 4);
 
-  // Add OpenStreetMap tiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 18,
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 
-  // Airport Data
-  var airports = [
-    { code: "SGR", name: "Sugarland Airport", 
-    address: "12888 S Texas 6, Sugar Land, TX 77498", coords: [29.6224, -95.6565], status: "In Operation", 
-    url: "https://skyharbour.sharepoint.com/:u:/r/SitePages/Sugar-Land-Regional-Airport-(SGR).aspx?csf=1&web=1&share=EdPzv_n12nVKnb16YB-L8tEBhlQb-epKP74zNEKgNugKhw&e=kWfwVW" },
-    { code: "OPF", name: "Opa Locka Airport", 
-    address: "14201 NW 42nd Ave, Opa-locka, FL 33054", coords: [25.907, -80.2782], status: "In Operation", 
-    url: 'https://skyharbour.sharepoint.com/:u:/r/SitePages/Miami-Opa-Locka-Executive-Airport-(OPF).aspx?csf=1&web=1&share=ERtTryUVhC1LoOjubbFMnnwBWggg9beyIjSNEd7HfAbTCg&e=UJBTm7' },
-    { code: "BNA", name: "Nashville Airport", 
-    address: "1 Terminal Dr, Nashville, TN 37214", coords: [36.1263, -86.6774], status: "In Operation", 
-    url: 'https://skyharbour.sharepoint.com/:u:/r/SitePages/Nashville-International-Airport-(BNA).aspx?csf=1&web=1&share=EZdU32SMCj5MvN8TXM_-cFcBXtFYkH3OLMMutJWOsfG_sg&e=fgrvia'},
-    { code: "DVT", name: "Deer Valley Airport", 
-    address: "702 W Deer Valley Rd, Phoenix, AZ 85027", coords: [33.6883, -112.083], status: "In Operation", 
-    url: 'https://skyharbour.sharepoint.com/:u:/r/SitePages/Deer-Valley-Airport-(DVT).aspx?csf=1&web=1&share=ESNMW6Xr4xlMtM5km3usm5EBzk2fpHBSTiwtyQZwBhEAPw&e=daF0CG' },
-    { code: "SJC", name: "San Jose Airport", 
-    address: "1701 Airport Blvd Ste B-1130, San Jose, CA 95110", coords: [37.3626, -121.9290], status: "In Operation", 
-    url: "https://skyharbour.sharepoint.com/:u:/r/SitePages/San-Jose-International-Airport.aspx?csf=1&web=1&share=EWXsus80JwRJpNbdPh1KlsEB6j_NjzBaOPJqNYyntBrILQ&e=6Uw3kK" },
-    { code: "CMA", name: "Camarillo Airport", 
-    address: "555 Airport Way, Camarillo, CA 93010", coords: [34.2139, -119.0944], status: "In Operation", 
-    url: 'https://skyharbour.sharepoint.com/:u:/r/SitePages/Camarillo-Airport-(CMA).aspx?csf=1&web=1&share=Ee-ETAyjRvRDtY6wWLD3qcoBIr7DtPeBLn4lsAcX8M5I2Q&e=0Wsduq' },
-    { code: "ADS", name: "Addison Airport", 
-    address: "4545 Jimmy Doolittle Dr, Addison, TX 75001", coords: [32.9686, -96.8365], status: "In Operation", 
-    url: 'https://skyharbour.sharepoint.com/:u:/r/SitePages/Addison-Airport-(ADS).aspx?csf=1&web=1&share=EY_daPIqWllJqngKPMqVB1QBdLl7dJhHoN5c_ctvrCa2tQ&e=8N6bvr' },
-    { code: "BFI", name: "King County Airport", 
-    address: "7277 Perimeter Rd S, Seattle, WA 98108", coords: [47.5300, -122.3024], status: "In Operation", 
-    url: 'https://skyharbour.sharepoint.com/:u:/r/SitePages/BFI--.aspx?csf=1&web=1&share=ERZwJt1IqMpKsI2JdlmLcxYBmO6StkBnKETdvS1j_bSvUw&e=Xk9F2Z'},
-    { code: "APA", name: "Centennial Airport", address: "8500 Peña Blvd, Denver, CO 80249", coords: [39.8617, -104.6731], status: "In Operation", 
-    url: 'https://skyharbour.sharepoint.com/:u:/g/EY13vGdbFVZMoF6lvAlgyBYByU41QObdUdv6hfrKC7HMKA?e=FE1tSm'},
-    { code: "HIO", name: "Hillsboro Airport", 
-    address: "3355 NE Cornell Rd, Hillsboro, OR 97124", coords: [45.5404, -122.9496], status: "In Development", 
-    url: 'https://skyharbour.sharepoint.com/:u:/r/SitePages/Hillsboro-Airport-(HIO).aspx?csf=1&web=1&share=EZy5wZGwlyZMlBpSZW7cXUwBGVOPp99_bjlpmhn7avkl6A&e=dpmtvj'},
-    { code: "SLC", name: "Salt Lake City International Airport", 
-    address: "W Terminal Dr, Salt Lake City, UT 84122", coords: [40.7899, -111.9791], status: "In Development", 
-    url: 'https://skyharbour.sharepoint.com/:u:/r/SitePages/Salt-Lake-City-International-Airport-(SLC).aspx?csf=1&web=1&share=ESBT1Hd3Zk5Ht9Hp4lm7ZTIB086BA0an_MUhd04cYfBQaw&e=u24LG1' },
-    { code: "PWK", name: "Chicago Executive Airport", 
-    address: "1020 Plant Rd, Wheeling, IL 60090", coords: [42.1142, -87.9015], status: "In Development", 
-    url: 'https://skyharbour.sharepoint.com/:u:/r/SitePages/Chicago-Executive-Airport-(PWK).aspx?csf=1&web=1&share=EZr9sftGc4xOg18s0SkehJgBrl-sNhIhllogzB2FjkpZRA&e=JMRfD1' },
-    { code: "IAD", name: "Dulles International Airport", 
-    address: "1 Saarinen Cir, Dulles, VA 20166", coords: [38.9531, -77.4565], status: "In Development", 
-    url: 'https://skyharbour.sharepoint.com/:u:/r/SitePages/Dulles-International-Airport-(IAD).aspx?csf=1&web=1&share=EVObGsghud9Ki9I6ZgXMIo8BZQwxNo8tLK14VWAV4FrViA&e=KYjISR' },
-    { code: "TTN", name: "Trenton-Mercer Airport", 
-    address: "1100 Terminal Cir Dr, Ewing Township, NJ 08628", coords: [40.2767, -74.8135], status: "In Development", 
-    url: 'https://skyharbour.sharepoint.com/:u:/r/SitePages/Trenton-Mercer-Airport-(TTN).aspx?csf=1&web=1&share=EfnhyUno5ktIl70jmsJ8DBYB8EOuiceYDkh4L7dA_RxCdw&e=qYdRrg' },
-    { code: "BDL", name: "Bradley International Airport", 
-    address: "Schoephoester Rd, Windsor Locks, CT 06096", coords: [41.9389, -72.6832], status: "In Development", 
-    url:'https://skyharbour.sharepoint.com/:u:/r/SitePages/Bradley-International-Airport-(BDL).aspx?csf=1&web=1&share=Ecm1Mc_Dcw5KuukE0aaAcOYBZEQmimBd9DzWQSsRIIVYtQ&e=FVJvZ2' },
-    { code: "ORL", name: "Orlando Executive Airport", 
-    address: "365 Rickenbacker Dr, Orlando, FL 32803", coords: [28.5455, -81.3330], status: "In Development", 
-    url: 'https://skyharbour.sharepoint.com/:u:/r/SitePages/Orlando-Executive-Airport-(ORL).aspx?csf=1&web=1&share=Ed11fStr4alMrzxdaT8PGuMBtZHHmAYbuRE8_v-ZSyvN3Q&e=jbkmou' },
-    { code: "SWF", name: "New York Stewart International Airport", 
-    address: "1180 1st St, New Windsor, NY 12553", coords: [41.5041, -74.1048], status: "In Development", 
-    url:'https://skyharbour.sharepoint.com/:u:/r/SitePages/New-York-Stewart-International-Airport-(SWF).aspx?csf=1&web=1&share=Eek4cgScxY1BujfoiAjd-3AB6PzUTPhJOpQ1kf65CgO1Zw&e=gZR8bR' },
-    { code: "POU", name: "Hudson Valley Regional Airport", 
-    address: "263 New Hackensack Rd, Wappingers Falls, NY 12590", coords: [41.6266, -73.8841], status: "In Development", 
-    url: 'https://skyharbour.sharepoint.com/:u:/r/SitePages/Hudson-Valley-Regional-Airport-(POU).aspx?csf=1&web=1&share=EXGLu56bZVFNlOEFFYF8WfIBs-AwiQck9T7pw-Ktw86QuA&e=6mhILe' }
-  ];
+fetch('https://billrunxichen.github.io/airport-map-data/airports.json')
+  .then(response => response.json())
+  .then(airports => {
+    airports.forEach(airport => {
+      const iconColor = airport.status === "In Operation" ? "red" : "black";
+      const icon = L.divIcon({
+        className: 'custom-icon',
+        html: `<div style="background:${iconColor}; width:12px; height:12px; border-radius:50%; border:2px solid white;"></div>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
+      });
 
-  // Add markers
-airports.forEach(function(airport) {
-  var iconColor = airport.status === "In Operation" ? "red" : "black";
-  var icon = L.divIcon({
-    className: 'custom-icon',
-    html: `<div style="background:${iconColor}; width:12px; height:12px; border-radius:50%; border:2px solid white;"></div>`,
-    iconSize: [16, 16],
-    iconAnchor: [8, 8]
-  });
-
-
-  // Add marker with popup
-  L.marker(airport.coords, { icon: icon }).addTo(map)
-    .bindPopup(
-      `<strong>${airport.code}</strong>: ${airport.name}<br>` +
-      `${airport.address}<br>` +
-      `<em>Status: ${airport.status}</em><br>` +
-      `<a href="${airport.url}" target="_blank">View Airport Page</a>`
-);
-
-});
-
+      L.marker([airport.lat, airport.lng], { icon }).addTo(map)
+        .bindPopup(
+          `<strong>${airport.code}</strong>: ${airport.name}<br>` +
+          `${airport.address}<br>` +
+          `<em>Status: ${airport.status}</em><br>` +
+          `<a href="${airport.url}" target="_blank">View Airport Page</a>`
+        );
+    });
+  })
+  .catch(err => console.error("❌ Error fetching JSON:", err));
 </script>
 
 </body>
